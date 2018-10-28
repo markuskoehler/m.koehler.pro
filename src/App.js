@@ -128,8 +128,8 @@ class App extends Component {
             ClientId : '23lcu1n5bct8omott3q40r7bfe', // Your client id here
             AppWebDomain : 'mk.auth.eu-central-1.amazoncognito.com',
             TokenScopesArray : ['email','openid'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
-            RedirectUriSignIn : 'https://localhost:3000/callback/',
-            RedirectUriSignOut : 'https://localhost:3000/signout/',
+            RedirectUriSignIn : 'https://m.koehler.pro/callback/',
+            RedirectUriSignOut : 'https://m.koehler.pro/signout/',
             IdentityProvider : 'Facebook', // e.g. 'Facebook',
             UserPoolId : 'eu-central-1_q9VJCoAQt', // Your user pool id here
             AdvancedSecurityDataCollectionFlag : 'false', // e.g. true
