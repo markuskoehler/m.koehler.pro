@@ -1,26 +1,31 @@
 import React, {Component} from 'react';
 import {CognitoAuth} from "amazon-cognito-auth-js";
+import appconfig from './config.js';
 
 class Auth extends Component {
-    onLoad() {
-        var react = this;
+    onLoad(pushSignedInStateToApp) {
+        const react = this;
         var i, items;//, tabs;
         items = document.getElementsByClassName("tab-pane");
         for (i = 0; i < items.length; i++) {
             items[i].style.display = 'none';
         }
-        document.getElementById("statusNotAuth").style.display = 'block';
-        document.getElementById("statusAuth").style.display = 'none';
-        // Initiatlize CognitoAuth object
+        //document.getElementById("statusNotAuth").style.display = 'block';
+        //document.getElementById("statusAuth").style.display = 'none';
+        // Initialize CognitoAuth object
         //console.log(this.props.signedin);
         var auth = this.initCognitoSDK();
         //console.log(this.props.signedin);
-        document.getElementById("signInButton").addEventListener("click", function () {
-            react.userButton(auth);//.bind(this);
+        document.getElementById("loginBtn").addEventListener("click", function () {
+            react.userButton(auth);
         });
+
         var curUrl = window.location.href;
         auth.parseCognitoWebResponse(curUrl);
-        //console.log(auth);
+
+        const loginState = (auth.username === undefined) ? false : auth;
+        //this.setState({signedIn: loginState});
+        pushSignedInStateToApp(loginState);
     }
 
     // Initialize a cognito auth object.
@@ -29,8 +34,8 @@ class Auth extends Component {
             ClientId: '23lcu1n5bct8omott3q40r7bfe', // Your client id here
             AppWebDomain: 'mk.auth.eu-central-1.amazoncognito.com',
             TokenScopesArray: ['email', 'openid'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
-            RedirectUriSignIn: 'http://localhost:3000/callback/',
-            RedirectUriSignOut: 'http://localhost:3000/signout/',
+            RedirectUriSignIn: appconfig.RedirectUriSignIn,
+            RedirectUriSignOut: appconfig.RedirectUriSignOut,
             IdentityProvider: 'Facebook', // e.g. 'Facebook',
             UserPoolId: 'eu-central-1_q9VJCoAQt', // Your user pool id here
             AdvancedSecurityDataCollectionFlag: 'false', // e.g. true
@@ -42,8 +47,8 @@ class Auth extends Component {
         auth.userhandler = {
             onSuccess: function (result) {
                 //alert("Sign in success");
-                console.log(result);
-                this.showSignedIn(result);
+                //console.log(result);
+                //this.showSignedIn(result);
             }.bind(this),
             onFailure: function (err) {
                 console.error(err);
@@ -88,15 +93,14 @@ class Auth extends Component {
 
     // Perform user operations.
     userButton(auth) {
-        var state = document.getElementById('signInButton').innerHTML;
+        var state = auth.username !== undefined;
         //alert(state);
-        if (state === "Sign Out") {
+        if (state) {
             document.getElementById("signInButton").innerHTML = "Sign In";
             auth.signOut();
             this.showSignedOut();
         } else {
-            var test = auth.getSession();
-            console.log(test);
+            auth.getSession();
         }
     }
 
@@ -155,5 +159,5 @@ class Auth extends Component {
     }
 }
 
-const auth = new Auth();
-export default auth;
+//const auth = new Auth();
+export default (new Auth());
