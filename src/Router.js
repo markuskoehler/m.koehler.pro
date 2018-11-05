@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Auth from "./Auth";
 import Nav from './Nav.js';
 import {BrowserRouter as BRouter, Route, Link} from "react-router-dom";
+import axios from 'axios';
 
 class Router extends Component {
     render() {
@@ -53,11 +54,61 @@ function Home() {
 }
 
 function About() {
+    oauth2request();
     return (
         <div>
             <h2>About</h2>
+            <div id="apidata"></div>
         </div>
     );
+}
+
+function oauth2request() {
+    const USER_GRANT_TYPE = 'client_credentials';
+    const CLIENT_ID = '1';
+    const CLIENT_SECRET = '1nYqkBmdSPNWzmpdh054nzZ1JGRzbhhmr14lyCGQ';
+    // https://qa.m-api.koehler.pro/auth/callback
+    const TOKEN_URL = 'https://qa.m-api.koehler.pro/oauth/token';
+    let USER_TOKEN = '';
+    let URL = 'https://qa.m-api.koehler.pro/api/user';
+
+    const data = {
+        grant_type: USER_GRANT_TYPE,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET
+    };
+
+    const bodyFormData = new FormData();
+    bodyFormData.set('grant_type', USER_GRANT_TYPE);
+    bodyFormData.set('client_id', CLIENT_ID);
+    bodyFormData.set('client_secret', CLIENT_SECRET);
+
+    if (!sessionStorage.getItem("accessToken")) {
+        axios.post(TOKEN_URL, bodyFormData, {headers: {'Content-Type': 'multipart/form-data'}})
+            .then(response => {
+                console.log(response.data);
+                USER_TOKEN = response.data.access_token;
+                sessionStorage.setItem('accessToken', USER_TOKEN);
+                //window.sessionStorage.accessToken = USER_TOKEN;
+                //console.log('userresponse ' + response.data.access_token);
+            })
+            .catch((error) => {
+                console.log('error ' + error);
+            });
+    } else {
+        USER_TOKEN = sessionStorage.getItem("accessToken");
+    }
+
+    const AuthStr = 'Bearer ' + USER_TOKEN;
+    axios.get(URL, { headers: { 'Authorization': AuthStr } })
+        .then(response => {
+            // If request is good...
+            console.log(response.data);
+            document.getElementById('apidata').innerHTML = response.data;
+        })
+        .catch((error) => {
+            console.log('error ' + error);
+        });
 }
 
 function Topics({match}) {
