@@ -17,7 +17,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        Auth.onLoad(this.handleSignedInChange);
+
     }
 
     render() {
