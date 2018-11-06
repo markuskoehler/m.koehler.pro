@@ -13,25 +13,11 @@ class Router extends Component {
                     <main className="container">
                         <div className="row">
                             <div className="col-md">
-                                <div className="tabsWell">
-                                    <div className="tab-content">
-                                        <div className="tab-pane" id="userdetails">
-                                            <p className="text-icon" title="Minimize" id="tabIcon"
-                                               onClick={Auth.toggleTab.bind(this)}>_</p>
-                                            <br/>
-                                            <h2 id="usertabtitle">You are:</h2>
-                                            <div className="user-form" id="usertab">
-                                                <pre id="idtoken"> ... </pre>
-                                                <pre id="acctoken"> ... </pre>
-                                                <pre id="reftoken"> ... </pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <Route exact path="/" component={Home}/>
                                 <Route path="/about" component={About}/>
                                 <Route path="/topics" component={Topics}/>
+
+                                <Route path="/login" component={Auth.Login}/>
                                 <Route path="/callback" component={Auth.Signin}/>
                                 <Route path="/signout" component={Auth.Signout}/>
                             </div>

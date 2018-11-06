@@ -55,7 +55,7 @@ function Unauthenticated(props) {
     return (
         <RSNav className="ml-auto" navbar>
         <NavItem>
-            <NavLink id='loginBtn'>Login</NavLink>
+            <NavLink tag={RouterNavLink} to="/login">Login</NavLink>
         </NavItem>
         </RSNav>
     );
